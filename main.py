@@ -11,25 +11,25 @@ window.configure(bg = 'white')
 window.resizable(width = True, height = True)
 
 # Created a base font for the whole application
-BL36 = tkFont.Font(family = 'Bahnschrift light', size=36)
-BL20 = tkFont.Font(family = 'Bahnschrift light', size=20)
+BL36 = tkFont.Font(family = 'Bahnschrift light', size = 36)
+BL20 = tkFont.Font(family = 'Bahnschrift light', size = 20)
 
-label1 = Label(window, text = 'Blidenschrift', font = BL36, fg='black', bg = '#ffffff')
+label1 = Label(window, text = 'Blidenschrift', font = BL36, fg = 'black', bg = '#ffffff')
 label1.pack()
 
 frame = Frame(window, width = 360, height = 360, borderwidth = 0, highlightthickness = 0)
 frame.pack()
-frame.place(anchor = 'center', relx = 0.5, rely = 0.45)
+frame.place(anchor='center', relx = 0.5, rely = 0.45)
 
 img_logo = ImageTk.PhotoImage(Image.open("img_asset/blindenschrift.jpg"))
 img_logo_dark = ImageTk.PhotoImage(Image.open("img_asset/invert_blindenschrift.jpg"))
 
-pic = Label(frame, image = img_logo)
+pic = Label(frame, image=img_logo)
 pic.pack()
 
 # Global is_on
 is_on = True
-newWindow = None
+newWindow = None  # Initialize newWindow as None
 
 def Switch():
 
@@ -38,11 +38,10 @@ def Switch():
 
     if is_on:
 
-        switch.config(image = on)
+        switch.config(image=on)
         is_on = False
 
         window.configure(bg = 'black')
-
         if newWindow:
 
             newWindow.configure(bg = 'black')
@@ -50,20 +49,20 @@ def Switch():
         label1.config(fg = 'white', bg = 'black')
         pic.config(image = img_logo_dark)
         setting_button.config(image = img_setting_dark)
-        
+
     else:
 
         switch.config(image = off)
         is_on = True
 
         window.configure(bg = 'white')
-
         if newWindow:
+
             newWindow.configure(bg = 'white')
 
-        label1.config(fg='black', bg='white')
+        label1.config(fg = 'black', bg = 'white')
         pic.config(image = img_logo)
-        setting_button.config(image = img_setting) # Change text color of label1
+        setting_button.config(image = img_setting)  # Change text color of label1
 
 on = PhotoImage(file = "img_asset/on-switch.png")
 off = PhotoImage(file = "img_asset/off-switch.png")
@@ -71,7 +70,8 @@ off = PhotoImage(file = "img_asset/off-switch.png")
 def OpenSetting():
 
     global switch  # Declare switch as global
-    
+    global newWindow
+
     newWindow = Toplevel(window)
     newWindow.title("Settings")
     newWindow.geometry("640x1136")
@@ -89,12 +89,11 @@ scan_b = Button(window, width = 5, height = 1, text = "Scan", font = BL20, fg = 
 scan_b.pack()
 scan_b.place(anchor = 'center', relx = 0.5, rely = 0.8)
 
-
-# Created a Image Button
+# Created an Image Button
 img_setting = ImageTk.PhotoImage(file = 'img_asset/setting.jpg')
-img_setting_dark = ImageTk.PhotoImage(file = 'img_asset\invert_setting.jpg')
+img_setting_dark = ImageTk.PhotoImage(file = 'img_asset/invert_setting.jpg')
 img_label = Label(window, image = img_setting)
-setting_button = Button(window, image=img_setting, command = OpenSetting)
+setting_button = Button(window, image = img_setting, command = OpenSetting)
 setting_button.pack()
 setting_button.place(relx = 0.85, rely = 0.85)
 
