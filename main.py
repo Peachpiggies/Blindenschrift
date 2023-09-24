@@ -29,6 +29,7 @@ pic.pack()
 
 # Global is_on
 is_on = True
+newWindow = None
 
 def Switch():
 
@@ -41,7 +42,11 @@ def Switch():
         is_on = False
 
         window.configure(bg = 'black')
-        #newWindow.configure(bg = 'black')
+
+        if newWindow:
+
+            newWindow.configure(bg = 'black')
+
         label1.config(fg = 'white', bg = 'black')
         pic.config(image = img_logo_dark)
         setting_button.config(image = img_setting_dark)
@@ -52,10 +57,13 @@ def Switch():
         is_on = True
 
         window.configure(bg = 'white')
-        #newWindow.configure(bg = 'white')
+
+        if newWindow:
+            newWindow.configure(bg = 'white')
+
         label1.config(fg='black', bg='white')
         pic.config(image = img_logo)
-        setting_button.config(image = img_setting)  # Change text color of label1
+        setting_button.config(image = img_setting) # Change text color of label1
 
 on = PhotoImage(file = "img_asset/on-switch.png")
 off = PhotoImage(file = "img_asset/off-switch.png")
