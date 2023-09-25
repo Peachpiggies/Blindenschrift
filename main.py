@@ -19,22 +19,24 @@ label1.pack()
 
 frame = Frame(window, width = 360, height = 360, borderwidth = 0, highlightthickness = 0)
 frame.pack()
-frame.place(anchor='center', relx = 0.5, rely = 0.45)
+frame.place(anchor = 'center', relx = 0.5, rely = 0.45)
 
 img_logo = ImageTk.PhotoImage(Image.open("img_asset/blindenschrift.jpg"))
 img_logo_dark = ImageTk.PhotoImage(Image.open("img_asset/invert_blindenschrift.jpg"))
 
-pic = Label(frame, image=img_logo)
+pic = Label(frame, image = img_logo)
 pic.pack()
 
 # Global is_on
 is_on = True
 newWindow = None  # Initialize newWindow as None
+setting_1 = None
 
 def Switch():
 
     global is_on
     global newWindow
+    global setting_1
 
     if is_on:
 
@@ -50,6 +52,10 @@ def Switch():
         pic.config(image = img_logo_dark)
         setting_button.config(image = img_setting_dark)
 
+        if setting_1:
+
+            setting_1.config(fg = 'white', bg = 'black')
+
     else:
 
         switch.config(image = off)
@@ -62,7 +68,11 @@ def Switch():
 
         label1.config(fg = 'black', bg = 'white')
         pic.config(image = img_logo)
-        setting_button.config(image = img_setting)  # Change text color of label1
+        setting_button.config(image = img_setting)
+
+        if setting_1:
+
+            setting_1.config(fg = 'black', bg = 'white')
 
 on = PhotoImage(file = "img_asset/on-switch.png")
 off = PhotoImage(file = "img_asset/off-switch.png")
@@ -71,12 +81,14 @@ def OpenSetting():
 
     global switch  # Declare switch as global
     global newWindow
+    global setting_1
 
     newWindow = Toplevel(window)
     newWindow.title("Settings")
     newWindow.geometry("640x1136")
     newWindow.configure(bg = 'white')
     setting_1 = Label(newWindow, text = "Change theme", font = BL20)
+    setting_1.configure(bg = 'white')
     setting_1.pack()
     setting_1.place(anchor = 'nw')
 
