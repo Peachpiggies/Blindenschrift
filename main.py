@@ -27,27 +27,29 @@ img_logo_dark = ImageTk.PhotoImage(Image.open("img_asset/invert_blindenschrift.j
 pic = Label(frame, image = img_logo)
 pic.pack()
 
-# Global is_on
-is_on = True
+# Global theme_defult and lang_defult
+theme_defult = True
+lang_defult = True
 newWindow = None  # Initialize newWindow as None
 setting_1 = None
+setting_2 = None
 
 def Switch():
-
-    global is_on
+    global theme_defult
     global newWindow
     global setting_1
+    global setting_2
 
-    if is_on:
-
-        switch.config(image=on)
-        is_on = False
+    if theme_defult:
+        switch.config(image = on)
+        theme_defult = False
 
         window.configure(bg = 'black')
+
         if newWindow:
-
+        
             newWindow.configure(bg = 'black')
-
+        
         label1.config(fg = 'white', bg = 'black')
         pic.config(image = img_logo_dark)
         setting_button.config(image = img_setting_dark)
@@ -56,45 +58,100 @@ def Switch():
 
             setting_1.config(fg = 'white', bg = 'black')
 
+        if setting_2:
+            
+            setting_2.config(fg = 'white', bg = 'black')
+
     else:
 
         switch.config(image = off)
-        is_on = True
+        theme_defult = True
 
         window.configure(bg = 'white')
+
         if newWindow:
-
+        
             newWindow.configure(bg = 'white')
-
+        
         label1.config(fg = 'black', bg = 'white')
         pic.config(image = img_logo)
         setting_button.config(image = img_setting)
 
         if setting_1:
-
+            
             setting_1.config(fg = 'black', bg = 'white')
+
+        if setting_2:
+
+            setting_2.config(fg = 'black', bg = 'white')
 
 on = PhotoImage(file = "img_asset/on-switch.png")
 off = PhotoImage(file = "img_asset/off-switch.png")
+
+TH = PhotoImage(file = "img_asset/TH.png")
+ENG = PhotoImage(file = "img_asset/ENG.png")
+
+def Language():
+
+    global lang_defult
+    global setting_1
+    global setting_2
+
+    if lang_defult:
+        lang.config(image = TH)
+        lang_defult = False
+
+        if setting_1:
+            
+            setting_1.config(text = 'เปลี่ยนสีธีม')
+
+        if setting_2:
+
+            setting_2.config(text = 'เปลี่ยนภาษา')
+
+    else:
+
+        lang.config(image = ENG)
+        lang_defult = True
+
+        if setting_1:
+
+            setting_1.config(text = 'Change Theme')
+
+        if setting_2:
+
+            setting_2.config(text = 'Change Language')
 
 def OpenSetting():
 
     global switch  # Declare switch as global
     global newWindow
     global setting_1
+    global setting_2
+    global lang
 
     newWindow = Toplevel(window)
     newWindow.title("Settings")
     newWindow.geometry("640x1136")
     newWindow.configure(bg = 'white')
-    setting_1 = Label(newWindow, text = "Change theme", font = BL20)
+
+    setting_1 = Label(newWindow, text = "Change Theme", font = BL20)
     setting_1.configure(bg = 'white')
     setting_1.pack()
     setting_1.place(anchor = 'nw')
 
+    setting_2 = Label(newWindow, text = "Change Language", font = BL20)
+    setting_2.configure(bg = 'white')
+    setting_2.pack()
+    setting_2.place(anchor = 'nw', rely = 0.1)
+
     switch = Button(newWindow, image = off, bd = 0, command = Switch)
     switch.pack(pady = 50)
-    switch.place(anchor = 'ne', relx = 0.95, rely = 0.01)
+    switch.place(anchor='ne', relx = 0.95, rely = 0.01)
+
+    lang = Button(newWindow, image = ENG, bd = 0, command = Language)
+    lang.pack()
+    lang.place(anchor = 'ne', relx = 0.95, rely = 0.1)
 
 # Created a button to scan
 scan_b = Button(window, width = 5, height = 1, text = "Scan", font = BL20, fg = '#bcb531', bg = '#3476ae')
