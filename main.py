@@ -14,7 +14,7 @@ window.resizable(width = True, height = True)
 BL36 = tkFont.Font(family = 'Bahnschrift light', size = 36)
 BL20 = tkFont.Font(family = 'Bahnschrift light', size = 20)
 
-label1 = Label(window, text = 'Blidenschrift', font = BL36, fg = 'black', bg = '#ffffff')
+label1 = Label(window, text = 'Blidenschrift', font = BL36, fg = 'black', bg = 'white')
 label1.pack()
 
 frame = Frame(window, width = 360, height = 360, borderwidth = 0, highlightthickness = 0)
@@ -35,12 +35,14 @@ setting_1 = None
 setting_2 = None
 
 def Switch():
+
     global theme_defult
     global newWindow
     global setting_1
     global setting_2
 
     if theme_defult:
+        
         switch.config(image = on)
         theme_defult = False
 
