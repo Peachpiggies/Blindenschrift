@@ -12,7 +12,7 @@ def imgShow():
         cv2.imshow('Detect Image', img)
         if cv2.waitKey(1) & 0xFF == ord('s'):
             print("image taken")
-            cv2.imwrite("test.jpg", img)
+            cv2.imwrite("img_asset/test1.jpg", img)
             if braille.imageToBraille("test.jpg") == "":
                 print("Image not recognized")
             break
