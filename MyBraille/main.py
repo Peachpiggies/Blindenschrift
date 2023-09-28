@@ -170,7 +170,7 @@ def Scan():
                 print("<<<SCANED>>>")
                 cv2.imwrite("save/scan.jpg", scaned)
 
-                scanned_braille = braille.brailleImgToText("save/scan.jpg")
+                scanned_braille = braille.imageToBraille("save/scan.jpg")
                 print(scanned_braille)
 
                 if not scanned_braille:
