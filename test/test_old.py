@@ -41,7 +41,7 @@ def detect_braille(image_path):
     return braille_characters
 
 def main():
-    image_path = "braille_image.png"  # Replace with the path to your image
+    image_path = "img_asset/test.jpg"  # Replace with the path to your image
     braille_characters = detect_braille(image_path)
 
     # Print the detected Braille characters

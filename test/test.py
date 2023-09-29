@@ -29,6 +29,7 @@ braille_patterns = {
     '⠭': 'x',
     '⠽': 'y',
     '⠵': 'z',
+    ' ' : ' '
 }
 
 def detect_braille(image_path):
@@ -121,7 +122,7 @@ def translate_braille_to_english(braille_characters):
     return english_text
 
 def main():
-    image_path = "img_asset/test.jpg"  # Replace with the path to your image
+    image_path = "img_asset/test2.png"  # Replace with the path to your image
     braille_characters = detect_braille(image_path)
 
     # Translate and print the detected Braille characters
