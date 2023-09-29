@@ -124,16 +124,26 @@ def open_setting():
     label1.pack_forget()
     pic.pack_forget()
     scan_b.pack_forget()
-
     setting_button.pack_forget()
-    setting_frame = Frame(window, width=640, height=1136, bg='white')
-    setting_frame.pack()
 
-    setting_1 = Label(setting_frame, text="Change Theme", font=BL20, bg='white')
+    if window.cget("bg") == "white":
+
+        setting_frame = Frame(window, width=640, height=1136, bg='white')
+        fg_color = 'black'
+        bg_color = 'white'
+
+    else:
+
+        setting_frame = Frame(window, width=640, height=1136, bg='black')
+        fg_color = 'white'
+        bg_color = 'black'
+    
+    setting_frame.pack()
+    setting_1 = Label(setting_frame, text="Change Theme", font=BL20, fg=fg_color, bg=bg_color)
     setting_1.pack()
     setting_1.place(anchor='nw')
 
-    setting_2 = Label(setting_frame, text="Change Language", font=BL20, bg='white')
+    setting_2 = Label(setting_frame, text="Change Language", font=BL20, fg=fg_color, bg=bg_color)
     setting_2.pack()
     setting_2.place(anchor='nw', rely=0.1)
 
@@ -145,9 +155,16 @@ def open_setting():
     lang.pack()
     lang.place(anchor='ne', relx=0.95, rely=0.1)
 
-    close_button = Button(setting_frame, image=back, font=BL20, command=close_setting)
+    close_button = Button(setting_frame, image=back, font=BL20, fg=fg_color, bg=bg_color, command=close_setting)
     close_button.pack()
     close_button.place(anchor='sw', rely=0.9)
+
+    # Initialize the theme in settings based on the global theme_var
+    if theme_default:
+        switch.config(image=off)
+    else:
+        switch.config(image=on)
+
 
 def scan():
 
