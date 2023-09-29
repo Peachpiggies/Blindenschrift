@@ -24,14 +24,14 @@ logo_frame.place(anchor='center', relx=0.5, rely=0.45)
 img_logo = ImageTk.PhotoImage(Image.open("img_asset/blindenschrift.jpg"))
 img_logo_dark = ImageTk.PhotoImage(Image.open("img_asset/invert_blindenschrift.jpg"))
 
-on = PhotoImage(file = "img_asset/on-switch.png")
-off = PhotoImage(file = "img_asset/off-switch.png")
+on = PhotoImage(file="img_asset/on-switch.png")
+off = PhotoImage(file="img_asset/off-switch.png")
 
-TH = PhotoImage(file = "img_asset/TH.png")
-ENG = PhotoImage(file = "img_asset/ENG.png")
+TH = PhotoImage(file="img_asset/TH.png")
+ENG = PhotoImage(file="img_asset/ENG.png")
 
-back = PhotoImage(file = "img_asset/back.png")
-back_dark = PhotoImage(file = "img_asset/back_dark.png")
+back = PhotoImage(file="img_asset/back.png")
+back_dark = PhotoImage(file="img_asset/back_dark.png")
 
 pic = Label(logo_frame, image=img_logo)
 pic.pack()
@@ -40,7 +40,9 @@ pic.pack()
 theme_default = True
 lang_default = True
 scan_b = None
-setting_window = None  # Initialize the setting window as None
+setting_frame = None  # Initialize the setting frame as None
+setting_1 = None  # Initialize setting_1 as None
+setting_2 = None  # Initialize setting_2 as None
 
 def switch_theme():
     global theme_default
@@ -64,57 +66,57 @@ def switch_language():
     if lang_default:
         lang.config(image=TH)
         lang_default = False
-        setting_1.config(text='เปลี่ยนสีธีม')
-        setting_2.config(text='เปลี่ยนภาษา')
+        if setting_1:
+            setting_1.config(text='เปลี่ยนสีธีม')
+        if setting_2:
+            setting_2.config(text='เปลี่ยนภาษา')
     else:
         lang.config(image=ENG)
         lang_default = True
-        setting_1.config(text='Change Theme')
-        setting_2.config(text='Change Language')
+        if setting_1:
+            setting_1.config(text='Change Theme')
+        if setting_2:
+            setting_2.config(text='Change Language')
 
 def close_setting():
-    global setting_window
-    if setting_window:
-        setting_window.destroy()
+    global setting_frame
+    if setting_frame:
+        setting_frame.destroy()
         label1.pack()
         pic.pack()
         scan_b.pack()
         setting_button.pack()
-        setting_window = None  # Reset the reference to None
+        setting_frame = None  # Reset the reference to None
 
 def open_setting():
-    global setting_window
+    global setting_frame
     global switch
     global setting_1
     global setting_2
     global lang
-    if setting_window:
-        return  # If the settings window is already open, do nothing
+    if setting_frame:
+        return  # If the settings frame is already open, do nothing
     label1.pack_forget()
     pic.pack_forget()
     scan_b.pack_forget()
     setting_button.pack_forget()
-    setting_window = Toplevel(window)
-    setting_window.title("Settings")
-    setting_window.geometry("640x1136")
-    setting_window.configure(bg='white')
-    setting_1 = Label(setting_window, text="Change Theme", font=BL20)
-    setting_1.configure(bg='white')
+    setting_frame = Frame(window, width=640, height=1136, bg='white')
+    setting_frame.pack()
+    setting_1 = Label(setting_frame, text="Change Theme", font=BL20, bg='white')
     setting_1.pack()
     setting_1.place(anchor='nw')
-    setting_2 = Label(setting_window, text="Change Language", font=BL20)
-    setting_2.configure(bg='white')
+    setting_2 = Label(setting_frame, text="Change Language", font=BL20, bg='white')
     setting_2.pack()
     setting_2.place(anchor='nw', rely=0.1)
-    switch = Button(setting_window, image=off, bd=0, command=switch_theme)
+    switch = Button(setting_frame, image=off, bd=0, command=switch_theme)
     switch.pack(pady=50)
     switch.place(anchor='ne', relx=0.95, rely=0.01)
-    lang = Button(setting_window, image=ENG, bd=0, command=switch_language)
+    lang = Button(setting_frame, image=ENG, bd=0, command=switch_language)
     lang.pack()
     lang.place(anchor='ne', relx=0.95, rely=0.1)
-    close_button = Button(setting_window, image=back, font=BL20, command=close_setting)
+    close_button = Button(setting_frame, image=back, font=BL20, command=close_setting)
     close_button.pack()
-    close_button.place(anchor='sw', rely=0.9)
+    close_button.place(anchor='sw', rely=0.2)
 
 def scan():
     cam = cv2.VideoCapture(0)
