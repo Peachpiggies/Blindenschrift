@@ -1,9 +1,12 @@
 import customtkinter
-from PIL import Image
+from tkinter import *
+from PIL import ImageTk, Image
 
 app = customtkinter.CTk()
 app.title("Main Menu")
-app.geometry("640x1136")
+app.geometry("640x1000")
+customtkinter.set_appearance_mode("light")
+customtkinter.set_default_color_theme("test/test_custom.json")
 
 bl36 = customtkinter.CTkFont(family = 'Bahnschrift light', size = 36)
 bl20 = customtkinter.CTkFont(family = 'Bahnschrift light', size = 20)
@@ -18,6 +21,16 @@ logo = customtkinter.CTkImage(light_image = Image.open("img_asset/blindenschrift
 
 logo_lable = customtkinter.CTkLabel(app, image = logo, text = "")
 logo_lable.anchor("center")
-logo_lable.pack()
+logo_lable.pack(padx = 0, pady = 50)
+
+scan_button = customtkinter.CTkButton(app, text="SCAN")
+scan_button.configure(font = bl36, width = 360, height = 60)
+scan_button.anchor("center")
+scan_button.pack(padx = 0, pady = 100)
+
+setting_button = customtkinter.CTkButton(app, text = "Settings")
+scan_button.configure(padx = 0, pady = 100)
+setting_button.anchor("e")
+scan_button.pack()
 
 app.mainloop()
