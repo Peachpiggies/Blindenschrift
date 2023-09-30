@@ -165,7 +165,6 @@ setting_2 = None  # Initialize setting_2 as None
 #     else:
 #         switch.config(image=on)
 
-
 def scan():
 
     cam = cv2.VideoCapture(0)
