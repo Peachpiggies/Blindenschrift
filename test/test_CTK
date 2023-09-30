@@ -1,0 +1,23 @@
+import customtkinter
+from PIL import Image
+
+app = customtkinter.CTk()
+app.title("Main Menu")
+app.geometry("640x1136")
+
+bl36 = customtkinter.CTkFont(family = 'Bahnschrift light', size = 36)
+bl20 = customtkinter.CTkFont(family = 'Bahnschrift light', size = 20)
+
+name = customtkinter.CTkLabel(app, text = "Blidenschrift", fg_color = "transparent", font = bl36)
+name.anchor("center")
+name.pack()
+
+logo = customtkinter.CTkImage(light_image = Image.open("img_asset/blindenschrift.jpg"),
+                              dark_image = Image.open("img_asset/invert_blindenschrift.jpg"),
+                              size = (360, 360))
+
+logo_lable = customtkinter.CTkLabel(app, image = logo, text = "")
+logo_lable.anchor("center")
+logo_lable.pack()
+
+app.mainloop()
