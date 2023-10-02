@@ -1,6 +1,7 @@
 import os
 import json
 import customtkinter as ctk
+import cv2
 from tkinter import *
 from PIL import ImageTk, Image
 
@@ -99,6 +100,27 @@ def close_setting():
         logo_lable.pack(padx = 0, pady = 50)
         scan_button.pack(padx = 0, pady = 80)
 
+def scan():
+
+    cam = cv2.VideoCapture(0)
+
+    while True:
+
+        app, scanned = cam.read()
+        cv2.imshow('Scan', scanned)
+
+        if cv2.waitKey(1) & 0xFF == ord():
+
+            cv2.imwrite("save/scan2.jpg", scanned)
+            # scanned_braille =
+
+            # if not scanned_braille:
+
+            # break
+
+    cam.release()
+    cv2.destroyAllWindows()
+
 setting_button = ctk.CTkButton(app, text = "n", command = open_setting)
 setting_button.configure(width = 58, height = 58, font = pkm_unk_36)
 setting_button.pack(anchor = "nw", padx = 0, pady = 0)
@@ -115,7 +137,7 @@ logo_lable = ctk.CTkLabel(app, image = logo, text = "")
 logo_lable.anchor("center")
 logo_lable.pack(padx = 0, pady = 50)
 
-scan_button = ctk.CTkButton(app, text="SCAN")
+scan_button = ctk.CTkButton(app, text="SCAN", command = scan)
 scan_button.configure(font = bl36, width = 360, height = 60)
 scan_button.anchor("center")
 scan_button.pack(padx = 0, pady = 80)
