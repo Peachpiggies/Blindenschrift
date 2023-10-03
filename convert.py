@@ -4,7 +4,7 @@ import torch
 
 
 def convert_to_braille_unicode(str_input: str, path: str = "./src/utils/braille_map.json") -> str:
-    with open(path, "r") as fl:
+    with open(path, "r", encoding = 'utf-8') as fl:
         data = json.load(fl)
 
     if str_input in data.keys():
