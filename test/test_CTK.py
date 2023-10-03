@@ -25,6 +25,7 @@ back = ctk.CTkImage(light_image=Image.open("img_asset/back.png"),
 theme_label = None
 combobox1 = None
 setting_frame = None
+scan_window = None
 
 # Global variable to store the theme setting
 theme_setting = 'light'
@@ -73,7 +74,7 @@ def open_setting():
     setting_frame = ctk.CTkFrame(master = app, width = 600, height = 900)
     setting_frame.pack(pady=10)
 
-    theme_label = ctk.CTkLabel(setting_frame, text='Color Theme', bg_color = "transparent")
+    theme_label = ctk.CTkLabel(setting_frame, text='Color Theme', bg_color = "transparent", font = bl20)
     theme_label.pack()
 
     combobox1 = ctk.CTkComboBox(setting_frame, values=['light', 'dark'], command=lambda choice: set_theme(choice))
@@ -101,25 +102,49 @@ def close_setting():
         scan_button.pack(padx = 0, pady = 80)
 
 def scan():
+    setting_button.pack_forget()
+    name.pack_forget()
+    logo_lable.pack_forget()
+    scan_button.pack_forget()
+
+    # Create a new window to display the camera feed
+    scan_window = Toplevel(app)
+    scan_window.title("Scanning")
+    scan_window.geometry("640x480")
+    scan_window.protocol("WM_DELETE_WINDOW", close_scan_window)  # Handle window close event
 
     cam = cv2.VideoCapture(0)
 
     while True:
+        ret, scanned = cam.read()
 
-        app, scanned = cam.read()
-        cv2.imshow('Scan', scanned)
+        if ret:
+            cv2.imshow("Scan Window", scanned)
 
-        if cv2.waitKey(1) & 0xFF == ord():
+        key = cv2.waitKey(1) & 0xFF
 
+        if key == ord('s'):
             cv2.imwrite("save/scan2.jpg", scanned)
-            # scanned_braille =
+            # Perform further processing on the saved image if needed
 
-            # if not scanned_braille:
-
-            # break
+        if key == ord('q'):  # Press 'q' to exit the scanning window
+            break
 
     cam.release()
     cv2.destroyAllWindows()
+
+def close_scan_window():
+
+    global scan_window
+
+    if scan_window:
+
+        scan_window.pack_forget()
+        setting_button.pack(anchor="nw", padx=0, pady=0)
+        name.pack(anchor="center")
+        logo_lable.pack(padx=0, pady=50)
+        scan_button.pack(padx=0, pady=80)
+
 
 setting_button = ctk.CTkButton(app, text = "n", command = open_setting)
 setting_button.configure(width = 58, height = 58, font = pkm_unk_36)
