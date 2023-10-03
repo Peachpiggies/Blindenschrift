@@ -2,6 +2,7 @@ import os
 import json
 import customtkinter as ctk
 import cv2
+import time
 from tkinter import *
 from PIL import ImageTk, Image
 
@@ -22,10 +23,13 @@ back = ctk.CTkImage(light_image=Image.open("img_asset/back.png"),
                     dark_image=Image.open("img_asset/back_dark.png"),
                     size=(58, 29))
 
+video_feed_image = ctk.CTkImage(size=(600, 800))
+
 theme_label = None
 combobox1 = None
 setting_frame = None
 scan_frame = None
+label = None
 
 # Global variable to store the theme setting
 theme_setting = 'light'
@@ -101,8 +105,12 @@ def close_setting():
         logo_lable.pack(padx = 0, pady = 50)
         scan_button.pack(padx = 0, pady = 80)
 
-def scan():
-    
+def open_scan():
+
+    # app.destroy()
+
+    global label
+
     setting_button.pack_forget()
     name.pack_forget()
     logo_lable.pack_forget()
@@ -111,47 +119,51 @@ def scan():
     # Create a new window to display the camera feed
     app.title("Scanning")
     scan_frame = ctk.CTkFrame(master=app, width=600, height=900)
+    scan_frame.pack(pady = 10)
 
-    label = ctk.CTkLabel(scan_frame, text="Camera Feed", width=640, height=480)
+    label = ctk.CTkLabel(scan_frame, text="", width=600, height=800)
     label.pack()
 
-    cam = cv2.VideoCapture(0)
+    app.after(2000, scan)
+
+def scan():
+    global label  # Reference the global label variable
+    # Open a video capture
+    cap = cv2.VideoCapture(0)  # 0 represents the default camera
+
+    if not cap.isOpened():
+        print("Error: Could not open camera.")
+        return
 
     while True:
-        ret, scanned = cam.read()
+        ret, frame = cap.read()
 
-        if ret:
-            # Convert the OpenCV image to a format that Tkinter can display
-            img_rgb = cv2.cvtColor(scanned, cv2.COLOR_BGR2RGB)
-            img_pil = Image.fromarray(img_rgb)
-            img_ctk = ctk.CTkImage.from_pil_image(img_pil)
-
-            # Set the image to the label
-            label.set_image(img_ctk)
-
-        key = cv2.waitKey(1) & 0xFF
-
-        if key == ord('s'):
-            cv2.imwrite("save/scan2.jpg", scanned)
-            # Perform further processing on the saved image if needed
-
-        if key == ord('q'):  # Press 'q' to exit the scanning window
+        if not ret:
+            print("Error: Could not read frame.")
             break
 
-    cam.release()
+        # Display the frame in the CTkImage object
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        img = Image.fromarray(frame_rgb)
+        video_feed_image.update_image(img)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
     cv2.destroyAllWindows()
 
-def close_scan():
+# def close_scan():
 
-    global scan_frame
+#     global scan_frame
 
-    if scan_frame:
+#     if scan_frame:
 
-        scan_frame.pack_forget()
-        setting_button.pack(anchor="nw", padx=0, pady=0)
-        name.pack(anchor="center")
-        logo_lable.pack(padx=0, pady=50)
-        scan_button.pack(padx=0, pady=80)
+#         scan_frame.pack_forget()
+#         setting_button.pack(anchor="nw", padx=0, pady=0)
+#         name.pack(anchor="center")
+#         logo_lable.pack(padx=0, pady=50)
+#         scan_button.pack(padx=0, pady=80)
 
 
 setting_button = ctk.CTkButton(app, text = "n", command = open_setting)
@@ -170,7 +182,7 @@ logo_lable = ctk.CTkLabel(app, image = logo, text = "")
 logo_lable.anchor("center")
 logo_lable.pack(padx = 0, pady = 50)
 
-scan_button = ctk.CTkButton(app, text="SCAN", command = scan)
+scan_button = ctk.CTkButton(app, text="SCAN", command = open_scan)
 scan_button.configure(font = bl36, width = 360, height = 60)
 scan_button.anchor("center")
 scan_button.pack(padx = 0, pady = 80)
