@@ -12,10 +12,56 @@ def load_image(image_path):
     image = PIL.Image.open(image_path)
     return image
 
+braille_dict = {
+    '⠁': 'a',
+    '⠃': 'b',
+    '⠉': 'c',
+    '⠙': 'd',
+    '⠑': 'e',
+    '⠋': 'f',
+    '⠛': 'g',
+    '⠓': 'h',
+    '⠊': 'i',
+    '⠚': 'j',
+    '⠅': 'k',
+    '⠨': 'k',
+    '⠇': 'l',
+    '⠍': 'm',
+    '⠩': 'm',
+    '⠝': 'n',
+    '⠕': 'o',
+    '⠏': 'p',
+    '⠟': 'q',
+    '⠗': 'r',
+    '⠎': 's',
+    '⠞': 't',
+    '⠥': 'u',
+    '⠧': 'v',
+    '⠺': 'w',
+    '⠭': 'x',
+    '⠽': 'y',
+    '⠿': 'y',
+    '⠵': 'z',
+    '⠪': 'o',
+    '⠻': 'er',
+    ' ': ' ',
+    '⠼': 'v',
+    '⠼⠁': '1',
+    '⠼⠃': '2',
+    '⠼⠉': '3',
+    '⠼⠙': '4',
+    '⠼⠑': '5',
+    '⠼⠋': '6',
+    '⠼⠛': '7',
+    '⠼⠓': '8',
+    '⠼⠊': '9',
+    '⠼⠚': '0'
+}
+
 # constants
-CONF = 0.15 # or other desirable confidence threshold level
+CONF = 0.01 # or other desirable confidence threshold level
 MODEL_PATH = "./yolov8_braille.pt"
-IMAGE_PATH = "./test01.jpg"
+IMAGE_PATH = "./test/ikea.png"
 
 # receiving results from the model
 image = load_image(IMAGE_PATH)
@@ -32,4 +78,4 @@ for box_line in list_boxes:
         str_left_to_right += convert_to_braille_unicode(model.names[int(each_class)], './braille_map.json')
     result += str_left_to_right + "\n"
 
-print(result)
+print(''.join([braille_dict[char] for char in result if char != '\n']))
