@@ -25,7 +25,7 @@ back = ctk.CTkImage(light_image=Image.open("img_asset/back.png"),
 theme_label = None
 combobox1 = None
 setting_frame = None
-scan_window = None
+scan_frame = None
 
 # Global variable to store the theme setting
 theme_setting = 'light'
@@ -102,16 +102,18 @@ def close_setting():
         scan_button.pack(padx = 0, pady = 80)
 
 def scan():
+    
     setting_button.pack_forget()
     name.pack_forget()
     logo_lable.pack_forget()
     scan_button.pack_forget()
 
     # Create a new window to display the camera feed
-    scan_window = Toplevel(app)
-    scan_window.title("Scanning")
-    scan_window.geometry("640x480")
-    scan_window.protocol("WM_DELETE_WINDOW", close_scan_window)  # Handle window close event
+    app.title("Scanning")
+    scan_frame = ctk.CTkFrame(master=app, width=600, height=900)
+
+    label = ctk.CTkLabel(scan_frame, text="Camera Feed", width=640, height=480)
+    label.pack()
 
     cam = cv2.VideoCapture(0)
 
@@ -119,7 +121,13 @@ def scan():
         ret, scanned = cam.read()
 
         if ret:
-            cv2.imshow("Scan Window", scanned)
+            # Convert the OpenCV image to a format that Tkinter can display
+            img_rgb = cv2.cvtColor(scanned, cv2.COLOR_BGR2RGB)
+            img_pil = Image.fromarray(img_rgb)
+            img_ctk = ctk.CTkImage.from_pil_image(img_pil)
+
+            # Set the image to the label
+            label.set_image(img_ctk)
 
         key = cv2.waitKey(1) & 0xFF
 
@@ -133,13 +141,13 @@ def scan():
     cam.release()
     cv2.destroyAllWindows()
 
-def close_scan_window():
+def close_scan():
 
-    global scan_window
+    global scan_frame
 
-    if scan_window:
+    if scan_frame:
 
-        scan_window.pack_forget()
+        scan_frame.pack_forget()
         setting_button.pack(anchor="nw", padx=0, pady=0)
         name.pack(anchor="center")
         logo_lable.pack(padx=0, pady=50)
