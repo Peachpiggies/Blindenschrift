@@ -29,7 +29,7 @@ for box_line in list_boxes:
     str_left_to_right = ""
     box_classes = box_line[:, -1]
     for each_class in box_classes:
-        str_left_to_right += convert_to_braille_unicode(model.names[int(each_class)])
+        str_left_to_right += convert_to_braille_unicode(model.names[int(each_class)], './braille_map.json')
     result += str_left_to_right + "\n"
 
 print(result)
