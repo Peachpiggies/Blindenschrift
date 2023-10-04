@@ -23,6 +23,7 @@ back = ctk.CTkImage(light_image=Image.open("img_asset/back.png"),
                     dark_image=Image.open("img_asset/back_dark.png"),
                     size=(58, 29))
 
+cap = None
 theme_label = None
 combobox1 = None
 setting_frame = None
@@ -103,13 +104,15 @@ def close_setting():
         logo_lable.pack(padx = 0, pady = 50)
         scan_button.pack(padx = 0, pady = 80)
 
-cap = cv2.VideoCapture(0)
-
 def open_scan():
 
-    # app.destroy()
-
+    global cap
     global label
+    global scan_frame  # Declare scan_frame as global
+
+    if cap is None:
+
+        cap = cv2.VideoCapture(0)  # Reinitialize the cap if it's None
 
     setting_button.pack_forget()
     name.pack_forget()
@@ -119,10 +122,16 @@ def open_scan():
     # Create a new window to display the camera feed
     app.title("Scanning")
     scan_frame = ctk.CTkFrame(master=app, width=600, height=900)
-    scan_frame.pack(pady = 10)
+    scan_frame.pack(pady=10)
+
+    back_button2 = ctk.CTkButton(scan_frame, width=58, height=29, bg_color="transparent", image=back, text="", command=close_scan)
+    back_button2.anchor("sw")
+    back_button2.pack()
 
     label = ctk.CTkLabel(scan_frame, text="", width=600, height=800)
-    label.pack()
+    label.pack(anchor="n")
+
+    scan()
 
 def scan():
 
@@ -131,30 +140,45 @@ def scan():
     global label
 
     if label is None:  # Check if label is None, and if so, create it
-        
+
         label = ctk.CTkLabel(scan_frame, text="", width=600, height=800)
         label.pack()
 
-    check, frame = cap.read()
-    cv2img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
-    img = Image.fromarray(cv2img)
-    imgtk = ImageTk.PhotoImage(image=img)
-    label.imgtk = imgtk
-    label.configure(image=imgtk)
-    label.after(10, scan)
+    if cap is not None and cap.isOpened():
+
+        check, frame = cap.read()
+
+        if check:
+
+            cv2img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+            img = Image.fromarray(cv2img)
+            imgtk = ctk.CTkImage(light_image=img, dark_image=img, size=(600, 600))
+
+            label.configure(image=imgtk)
+
+    # print("hi")
+
+    # Schedule the scan function and store the ID
+    global scan_id
+    scan_id = label.after(1, scan)
 
 def close_scan():
 
     global scan_frame
+    global label
+    global cap
 
     if scan_frame:
 
+        # Cancel the scheduled scan function
+        label.after_cancel(scan_id)
         scan_frame.pack_forget()
+
+        app.title("Main Menu")
         setting_button.pack(anchor="nw", padx=0, pady=0)
         name.pack(anchor="center")
         logo_lable.pack(padx=0, pady=50)
         scan_button.pack(padx=0, pady=80)
-
 
 setting_button = ctk.CTkButton(app, text = "n", command = open_setting)
 setting_button.configure(width = 58, height = 58, font = pkm_unk_36)
@@ -172,7 +196,7 @@ logo_lable = ctk.CTkLabel(app, image = logo, text = "")
 logo_lable.anchor("center")
 logo_lable.pack(padx = 0, pady = 50)
 
-scan_button = ctk.CTkButton(app, text="SCAN", command = scan)
+scan_button = ctk.CTkButton(app, text="SCAN", command = open_scan)
 scan_button.configure(font = bl36, width = 360, height = 60)
 scan_button.anchor("center")
 scan_button.pack(padx = 0, pady = 80)
