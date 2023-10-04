@@ -8,7 +8,7 @@ from PIL import ImageTk, Image
 
 app = ctk.CTk()
 app.title("Main Menu")
-app.geometry("640x980")
+app.geometry("640x800")
 app.resizable(width=0, height=0)
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("test/test_custom.json")
@@ -74,7 +74,7 @@ def open_setting():
     ctk.set_default_color_theme("test/test_custom.json")
 
     # Create a frame to hold the label and combobox
-    setting_frame = ctk.CTkFrame(master = app, width = 600, height = 900)
+    setting_frame = ctk.CTkFrame(master = app, width = 600, height = 700)
     setting_frame.pack(pady=10)
 
     theme_label = ctk.CTkLabel(setting_frame, text='Color Theme', bg_color = "transparent", font = bl20)
@@ -111,7 +111,6 @@ def open_scan():
     global scan_frame  # Declare scan_frame as global
 
     if cap is None:
-
         cap = cv2.VideoCapture(0)  # Reinitialize the cap if it's None
 
     setting_button.pack_forget()
@@ -121,15 +120,17 @@ def open_scan():
 
     # Create a new window to display the camera feed
     app.title("Scanning")
-    scan_frame = ctk.CTkFrame(master=app, width=600, height=900)
-    scan_frame.pack(pady=10)
+    scan_frame = ctk.CTkFrame(master = app, width = 600, height = 750)
+    scan_frame.pack(pady = 10)
 
-    back_button2 = ctk.CTkButton(scan_frame, width=58, height=29, bg_color="transparent", image=back, text="", command=close_scan)
-    back_button2.anchor("sw")
-    back_button2.pack()
+    back_button2 = ctk.CTkButton(scan_frame, width = 58, height = 29, image = back, text = "", command = close_scan)
+    back_button2.pack(side = "top", anchor = "nw")
 
-    label = ctk.CTkLabel(scan_frame, text="", width=600, height=800)
-    label.pack(anchor="n")
+    label = ctk.CTkLabel(scan_frame, text = "", width = 600, height = 600)
+    label.pack(side = "top", fill = "both", expand = True)
+
+    confirm_button = ctk.CTkButton(scan_frame, width = 72, height = 72, text = "O", font = bb72)
+    confirm_button.pack(side = "top", padx = (600-72)//2, pady = 10)  # Centered below the label
 
     scan()
 
@@ -199,6 +200,6 @@ logo_lable.pack(padx = 0, pady = 50)
 scan_button = ctk.CTkButton(app, text="SCAN", command = open_scan)
 scan_button.configure(font = bl36, width = 360, height = 60)
 scan_button.anchor("center")
-scan_button.pack(padx = 0, pady = 80)
+scan_button.pack(padx = 0, pady = 40)
 
 app.mainloop() 
