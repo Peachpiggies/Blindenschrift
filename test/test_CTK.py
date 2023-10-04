@@ -2,9 +2,7 @@ import os
 import json
 import customtkinter as ctk
 import cv2
-import time
-from tkinter import *
-from PIL import ImageTk, Image
+from PIL import Image
 
 app = ctk.CTk()
 app.title("Main Menu")
