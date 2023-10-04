@@ -33,6 +33,21 @@ label = None
 # Global variable to store the theme setting
 theme_setting = 'light'
 
+def close_main():
+
+    setting_button.pack_forget()
+    name.pack_forget()
+    logo_lable.pack_forget()
+    scan_button.pack_forget()
+
+def pack_main():
+
+        app.title("Main Menu")
+        setting_button.pack(anchor="nw", padx=0, pady=0)
+        name.pack(anchor="center")
+        logo_lable.pack(padx=0, pady=50)
+        scan_button.pack(padx=0, pady=40)   
+
 def load_settings() -> dict:
 
     if not os.path.exists('./test/settings.json'):
@@ -64,10 +79,7 @@ def open_setting():
     global combobox1
     global theme_label
 
-    setting_button.pack_forget()
-    name.pack_forget()
-    logo_lable.pack_forget()
-    scan_button.pack_forget()
+    close_main()
 
     app.title("Settings")
     ctk.set_appearance_mode("light")
@@ -77,13 +89,13 @@ def open_setting():
     setting_frame = ctk.CTkFrame(master = app, width = 600, height = 700)
     setting_frame.pack(pady=10)
 
-    theme_label = ctk.CTkLabel(setting_frame, text='Color Theme', bg_color = "transparent", font = bl20)
+    theme_label = ctk.CTkLabel(setting_frame, text = 'Color Theme', bg_color = "transparent", font = bl20)
     theme_label.pack()
 
-    combobox1 = ctk.CTkComboBox(setting_frame, values=['light', 'dark'], command=lambda choice: set_theme(choice))
+    combobox1 = ctk.CTkComboBox(setting_frame, values = ['light', 'dark'], command = lambda choice: set_theme(choice))
     combobox1.pack()
 
-    back_button = ctk.CTkButton(setting_frame, width = 58, height = 29, bg_color = "transparent", image=back, text="", command=close_setting)
+    back_button = ctk.CTkButton(setting_frame, width = 58, height = 29, bg_color = "transparent", image=back, text = "", command = close_setting)
     back_button.anchor("sw")
     back_button.pack()
 
@@ -99,10 +111,7 @@ def close_setting():
         combobox1.pack_forget()
         setting_frame.pack_forget()
 
-        setting_button.pack(anchor = "nw", padx = 0, pady = 0)
-        name.pack(anchor = "center")
-        logo_lable.pack(padx = 0, pady = 50)
-        scan_button.pack(padx = 0, pady = 80)
+        pack_main()
 
 def open_scan():
 
@@ -113,10 +122,7 @@ def open_scan():
     if cap is None:
         cap = cv2.VideoCapture(0)  # Reinitialize the cap if it's None
 
-    setting_button.pack_forget()
-    name.pack_forget()
-    logo_lable.pack_forget()
-    scan_button.pack_forget()
+    close_main()
 
     # Create a new window to display the camera feed
     app.title("Scanning")
@@ -129,10 +135,22 @@ def open_scan():
     label = ctk.CTkLabel(scan_frame, text = "", width = 600, height = 600)
     label.pack(side = "top", fill = "both", expand = True)
 
-    confirm_button = ctk.CTkButton(scan_frame, width = 72, height = 72, text = "O", font = bb72)
+    confirm_button = ctk.CTkButton(scan_frame, width = 72, height = 72, text = "O", font = bb72, command = confirm_scan)
     confirm_button.pack(side = "top", padx = (600-72)//2, pady = 10)  # Centered below the label
 
     scan()
+
+def confirm_scan():
+
+    if cap is not None and cap.isOpened():
+
+        ret, frame = cap.read()
+
+        if ret:
+
+            cv2.imwrite("./save/scaned.png", frame)
+    
+    close_scan()
 
 def scan():
 
@@ -175,11 +193,7 @@ def close_scan():
         label.after_cancel(scan_id)
         scan_frame.pack_forget()
 
-        app.title("Main Menu")
-        setting_button.pack(anchor="nw", padx=0, pady=0)
-        name.pack(anchor="center")
-        logo_lable.pack(padx=0, pady=50)
-        scan_button.pack(padx=0, pady=80)
+        pack_main()
 
 setting_button = ctk.CTkButton(app, text = "n", command = open_setting)
 setting_button.configure(width = 58, height = 58, font = pkm_unk_36)
