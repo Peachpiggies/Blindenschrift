@@ -151,6 +151,18 @@ def confirm_scan():
             cv2.imwrite("./save/scaned.png", frame)
     
     close_scan()
+    close_main()
+    app.title("Output")
+
+    output = ctk.CTkFrame(master = app, width = 600, height = 700)
+    output.pack(pady = 10)
+
+    show_saved = ctk.CTkImage(light_image = Image.open("./save/scaned.png"),
+                              dark_image = Image.open("./save/scaned.png"),
+                              size = (600, 600))
+    
+    label_ss = ctk.CTkLabel(output, image = show_saved, text = "", width = 600, height = 600)
+    label_ss.pack()
 
 def scan():
 
