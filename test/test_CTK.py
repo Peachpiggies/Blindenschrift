@@ -23,8 +23,6 @@ back = ctk.CTkImage(light_image=Image.open("img_asset/back.png"),
                     dark_image=Image.open("img_asset/back_dark.png"),
                     size=(58, 29))
 
-video_feed_image = ctk.CTkImage(size=(600, 800))
-
 theme_label = None
 combobox1 = None
 setting_frame = None
@@ -105,6 +103,8 @@ def close_setting():
         logo_lable.pack(padx = 0, pady = 50)
         scan_button.pack(padx = 0, pady = 80)
 
+cap = cv2.VideoCapture(0)
+
 def open_scan():
 
     # app.destroy()
@@ -124,46 +124,36 @@ def open_scan():
     label = ctk.CTkLabel(scan_frame, text="", width=600, height=800)
     label.pack()
 
-    app.after(2000, scan)
-
 def scan():
-    global label  # Reference the global label variable
-    # Open a video capture
-    cap = cv2.VideoCapture(0)  # 0 represents the default camera
 
-    if not cap.isOpened():
-        print("Error: Could not open camera.")
-        return
+    global imgtk
+    global frame
+    global label
 
-    while True:
-        ret, frame = cap.read()
+    if label is None:  # Check if label is None, and if so, create it
+        
+        label = ctk.CTkLabel(scan_frame, text="", width=600, height=800)
+        label.pack()
 
-        if not ret:
-            print("Error: Could not read frame.")
-            break
+    check, frame = cap.read()
+    cv2img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+    img = Image.fromarray(cv2img)
+    imgtk = ImageTk.PhotoImage(image=img)
+    label.imgtk = imgtk
+    label.configure(image=imgtk)
+    label.after(10, scan)
 
-        # Display the frame in the CTkImage object
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img = Image.fromarray(frame_rgb)
-        video_feed_image.update_image(img)
+def close_scan():
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+    global scan_frame
 
-    cap.release()
-    cv2.destroyAllWindows()
+    if scan_frame:
 
-# def close_scan():
-
-#     global scan_frame
-
-#     if scan_frame:
-
-#         scan_frame.pack_forget()
-#         setting_button.pack(anchor="nw", padx=0, pady=0)
-#         name.pack(anchor="center")
-#         logo_lable.pack(padx=0, pady=50)
-#         scan_button.pack(padx=0, pady=80)
+        scan_frame.pack_forget()
+        setting_button.pack(anchor="nw", padx=0, pady=0)
+        name.pack(anchor="center")
+        logo_lable.pack(padx=0, pady=50)
+        scan_button.pack(padx=0, pady=80)
 
 
 setting_button = ctk.CTkButton(app, text = "n", command = open_setting)
@@ -182,7 +172,7 @@ logo_lable = ctk.CTkLabel(app, image = logo, text = "")
 logo_lable.anchor("center")
 logo_lable.pack(padx = 0, pady = 50)
 
-scan_button = ctk.CTkButton(app, text="SCAN", command = open_scan)
+scan_button = ctk.CTkButton(app, text="SCAN", command = scan)
 scan_button.configure(font = bl36, width = 360, height = 60)
 scan_button.anchor("center")
 scan_button.pack(padx = 0, pady = 80)
