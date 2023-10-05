@@ -214,8 +214,8 @@ name.anchor("center")
 name.pack()
 
 logo = ctk.CTkImage(light_image = Image.open("img_asset/blindenschrift.png"),
-                              dark_image = Image.open("img_asset/invert_blindenschrift.png"),
-                              size = (360, 360))
+                    dark_image = Image.open("img_asset/invert_blindenschrift.png"),
+                    size = (360, 360))
 
 logo_lable = ctk.CTkLabel(app, image = logo, text = "")
 logo_lable.anchor("center")
