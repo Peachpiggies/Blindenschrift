@@ -2,6 +2,7 @@ import os
 import json
 import customtkinter as ctk
 import cv2
+from Copy_paste import load_model, process_image_and_convert_to_braille
 from PIL import Image
 
 app = ctk.CTk()
@@ -27,6 +28,49 @@ combobox1 = None
 setting_frame = None
 scan_frame = None
 label = None
+output = None
+
+result_text = ""
+MODEL_PATH = "./yolov8_braille.pt"
+CONFIDENCE_THRESHOLD = 0.01
+
+braille_dict = {
+    '⠁': 'a',
+    '⠃': 'b',
+    '⠉': 'c',
+    '⠙': 'd',
+    '⠑': 'e',
+    '⠢': 'e',
+    '⠋': 'f',
+    '⠛': 'g',
+    '⠓': 'h',
+    '⠊': 'i',
+    '⠚': 'j',
+    '⠅': 'k',
+    '⠨': 'k',
+    '⠇': 'l',
+    '⠍': 'm',
+    '⠩': 'm',
+    '⠝': 'n',
+    '⠕': 'o',
+    '⠏': 'p',
+    '⠟': 'q',
+    '⠗': 'r',
+    '⠎': 's',
+    '⠞': 't',
+    '⠥': 'u',
+    '⠧': 'v',
+    '⠺': 'w',
+    '⠭': 'x',
+    '⠽': 'y',
+    '⠿': 'y',
+    '⠵': 'z',
+    '⠪': 'o',
+    '⠻': 'er',
+    ' ': ' ',
+    '⠼': 'v',
+    '⠣': 'gh'
+    }
 
 # Global variable to store the theme setting
 theme_setting = 'light'
@@ -133,61 +177,74 @@ def open_scan():
     label = ctk.CTkLabel(scan_frame, text = "", width = 600, height = 600)
     label.pack(side = "top", fill = "both", expand = True)
 
-    confirm_button = ctk.CTkButton(scan_frame, width = 72, height = 72, text = "O", font = bb72, command = confirm_scan)
+    confirm_button = ctk.CTkButton(scan_frame, width=72, height=72, text="O", font=bb72, command=lambda braille_dict=braille_dict: confirm_scan(braille_dict))
     confirm_button.pack(side = "top", padx = (600-72)//2, pady = 10)  # Centered below the label
 
     scan()
 
-def confirm_scan():
+def confirm_scan(braille_dict):
+
+    global cap
+    global label
+    global result_text
+    global output
+    global MODEL_PATH
+    global CONFIDENCE_THRESHOLD  # Declare MODEL_PATH as global
 
     if cap is not None and cap.isOpened():
-
         ret, frame = cap.read()
 
         if ret:
-
             cv2.imwrite("./save/scaned.png", frame)
-    
+
     close_scan()
     close_main()
     app.title("Output")
 
-    output = ctk.CTkFrame(master = app, width = 600, height = 700)
-    output.pack(pady = 10)
+    result_text = process_image_and_convert_to_braille(MODEL_PATH, "./save/scaned.png", braille_dict, CONFIDENCE_THRESHOLD)
 
-    show_saved = ctk.CTkImage(light_image = Image.open("./save/scaned.png"),
-                              dark_image = Image.open("./save/scaned.png"),
-                              size = (600, 600))
-    
-    label_ss = ctk.CTkLabel(output, image = show_saved, text = "", width = 600, height = 600)
+    output = ctk.CTkFrame(master=app, width=600, height=700)
+    output.pack(pady=10)
+
+    show_saved = ctk.CTkImage(light_image=Image.open("./runs/detect/predict/scaned.png"),
+                              dark_image=Image.open("./runs/detect/predict/scaned.png"),
+                              size=(600, 600))
+
+    label_ss = ctk.CTkLabel(output, image=show_saved, text="", width=600, height=600)
     label_ss.pack()
+
+    global result_text_label
+    result_text_label = ctk.CTkLabel(output, text=result_text, font = bl36)
+    result_text_label.pack()
+
+    back_button3 = ctk.CTkButton(output, width = 58, height = 29, image = back, text = "", command = close_CS)
+    back_button3.pack(side = "top", anchor = "sw")
 
 def scan():
 
     global imgtk
     global frame
     global label
+    global result_text  # Declare the result_text variable as global
 
-    if label is None:  # Check if label is None, and if so, create it
-
+    if label is None:
         label = ctk.CTkLabel(scan_frame, text="", width=600, height=800)
         label.pack()
 
     if cap is not None and cap.isOpened():
-
         check, frame = cap.read()
 
         if check:
-
             cv2img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
             img = Image.fromarray(cv2img)
             imgtk = ctk.CTkImage(light_image=img, dark_image=img, size=(600, 600))
 
             label.configure(image=imgtk)
 
-    # print("hi")
+            # Check if scanning is complete
+            if result_text:
+                result_text_label.configure(text=result_text)  # Update the result text label
 
-    # Schedule the scan function and store the ID
     global scan_id
     scan_id = label.after(1, scan)
 
@@ -202,6 +259,16 @@ def close_scan():
         # Cancel the scheduled scan function
         label.after_cancel(scan_id)
         scan_frame.pack_forget()
+
+        pack_main()
+
+def close_CS():
+
+    global output
+
+    if output:
+
+        output.pack_forget()
 
         pack_main()
 
